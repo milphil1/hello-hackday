@@ -5,57 +5,208 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hello, world!</title>
   <style>
+    :root {
+      color-scheme: light;
+      --ink: #54243c;
+      --muted: #916b7e;
+      --pink: #dc4f88;
+    }
     * { box-sizing: border-box; }
     body {
       min-height: 100vh;
+      min-height: 100svh;
       margin: 0;
       display: grid;
       place-items: center;
-      padding: 2rem;
-      color: #573348;
-      background: linear-gradient(145deg, #fff0f6, #ffc7de);
+      overflow-x: hidden;
+      padding: clamp(1.25rem, 5vw, 4rem);
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 12% 15%, #fff 0, #fff0f6 37%, transparent 67%),
+        linear-gradient(135deg, #fff4f8 0%, #f9d9e6 55%, #f3c7db 100%);
       font-family: "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
-      text-align: center;
     }
-    main {
-      max-width: 34rem;
-      padding: 3rem 3.5rem;
+    .page {
+      width: min(100%, 980px);
+      display: grid;
+      grid-template-columns: 1fr 0.92fr;
+      align-items: center;
+      gap: clamp(2.5rem, 7vw, 6rem);
+    }
+    .intro { position: relative; padding: 1rem 0; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin: 0 0 1.5rem;
+      color: #9a5574;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: #e877a2;
+      box-shadow: 0 0 0 0.25rem #e877a222;
+      content: "";
+    }
+    .pig {
+      display: grid;
+      width: 5.75rem;
+      height: 5.75rem;
+      margin-bottom: 1.5rem;
+      place-items: center;
+      border: 1px solid #f1bfd2;
+      border-radius: 1.8rem;
       background: #fffafd;
-      border: 1px solid #f5b6d0;
-      border-radius: 2rem;
-      box-shadow: 0 1rem 3rem #a43d6b20;
+      box-shadow: 0 0.8rem 2rem #8f3b6017;
+      font-size: 3.5rem;
+      line-height: 1;
+      transform: rotate(-6deg);
     }
-    .pig { margin: 0 0 1rem; font-size: 4rem; line-height: 1; }
-    h1 { margin: 0; color: #c13f79; font-size: clamp(2.25rem, 8vw, 3.5rem); }
+    h1 {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(3.5rem, 7.8vw, 6.5rem);
+      font-weight: 800;
+      letter-spacing: -0.075em;
+      line-height: 0.92;
+    }
+    h1 span { color: var(--pink); }
     .weather {
-      margin-top: 2rem;
-      padding: 1.25rem 1.5rem;
-      background: #fff0f6;
-      border: 1px solid #f5c2d7;
-      border-radius: 1.25rem;
+      position: relative;
+      overflow: hidden;
+      padding: clamp(1.5rem, 4vw, 2.25rem);
+      border: 1px solid #fff9;
+      border-radius: 2rem;
+      background: linear-gradient(150deg, #fffafd 0%, #fff4f8 48%, #ffe8f0 100%);
+      box-shadow: 0 1.5rem 4rem #8f3b6020, inset 0 1px #fff;
     }
-    .weather h2 { margin: 0; color: #80566c; font-size: 1rem; font-weight: 700; }
-    .weather-reading { margin: 0.6rem 0 0; color: #c13f79; font-size: 1.4rem; font-weight: 700; }
-    .weather-details, .weather-updated { margin: 0.4rem 0 0; color: #80566c; font-size: 0.9rem; }
-    .weather-updated { font-size: 0.75rem; }
-    .weather a { color: #a83268; }
+    .weather::after {
+      position: absolute;
+      top: -4.5rem;
+      right: -3rem;
+      width: 13rem;
+      height: 13rem;
+      border: 1px solid #e87ca433;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1.3rem #e87ca40a, 0 0 0 2.6rem #e87ca408;
+      content: "";
+      pointer-events: none;
+    }
+    .weather-top, .location { display: flex; align-items: center; }
+    .weather-top { justify-content: space-between; gap: 1rem; }
+    .weather-label, .location { color: var(--muted); font-size: 0.8rem; font-weight: 700; }
+    .live { display: inline-flex; align-items: center; gap: 0.45rem; }
+    .live::before {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: #48ad7b;
+      box-shadow: 0 0 0 0.22rem #48ad7b20;
+      content: "";
+    }
+    .location { gap: 0.35rem; margin: 0; }
+    .location span { font-size: 1rem; }
+    .weather-main {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 2.25rem 0 1.8rem;
+    }
+    .weather-icon { font-size: 3.25rem; line-height: 1; }
+    .temperature {
+      color: var(--ink);
+      font-size: clamp(3.5rem, 7vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -0.08em;
+      line-height: 0.95;
+    }
+    .temperature sup {
+      margin-left: 0.1rem;
+      color: var(--pink);
+      font-size: 0.46em;
+      vertical-align: top;
+      letter-spacing: -0.04em;
+    }
+    .conditions { margin: 0.55rem 0 0; color: var(--muted); font-size: 0.95rem; font-weight: 700; }
+    .weather-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid #e9c7d5;
+      padding-top: 1.2rem;
+    }
+    .stat + .stat { border-left: 1px solid #e9c7d5; padding-left: 1.25rem; }
+    .stat-label { display: block; margin-bottom: 0.35rem; color: var(--muted); font-size: 0.72rem; }
+    .stat-value { color: var(--ink); font-size: 0.95rem; font-weight: 700; }
+    .weather-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-top: 1.6rem;
+      color: #a17d8e;
+      font-size: 0.68rem;
+    }
+    .weather a { color: #a43f69; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    @media (max-width: 700px) {
+      body { padding: 2rem 1.25rem; }
+      .page { max-width: 30rem; grid-template-columns: 1fr; gap: 2rem; }
+      .intro { text-align: center; }
+      .eyebrow { margin-bottom: 1.2rem; }
+      .pig { width: 4.8rem; height: 4.8rem; margin: 0 auto 1.25rem; border-radius: 1.5rem; font-size: 3rem; }
+      h1 { font-size: clamp(3.8rem, 17vw, 5rem); }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .pig { animation: bob 4s ease-in-out infinite; }
+      @keyframes bob { 50% { transform: translateY(-0.35rem) rotate(-3deg); } }
+    }
   </style>
 </head>
 <body>
-  <main>
-    <div class="pig" role="img" aria-label="Pig">🐷</div>
-    <h1>Hello, world!</h1>
-    <section class="weather" aria-labelledby="weather-title" aria-live="polite">
-      <h2 id="weather-title">Weather in Manchester</h2>
-      <p class="weather-reading" id="weather-reading">Getting the latest weather…</p>
-      <p class="weather-details" id="weather-details"></p>
-      <p class="weather-updated" id="weather-updated"></p>
-      <p class="weather-updated">Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a></p>
+  <main class="page">
+    <section class="intro" aria-labelledby="greeting">
+      <p class="eyebrow">A little hello from Manchester</p>
+      <div class="pig" role="img" aria-label="Pig">🐷</div>
+      <h1 id="greeting">Hello,<br><span>world!</span></h1>
+    </section>
+
+    <section class="weather" aria-labelledby="weather-title">
+      <div class="weather-top">
+        <span class="weather-label live">Live weather</span>
+        <h2 class="location" id="weather-title"><span aria-hidden="true">⌖</span> Manchester, UK</h2>
+      </div>
+      <div class="weather-main" id="weather-live" aria-live="polite">
+        <span class="weather-icon" id="weather-icon" aria-hidden="true">☁️</span>
+        <div>
+          <div class="temperature"><span id="temperature">--</span><sup>°C</sup></div>
+          <p class="conditions" id="conditions">Getting the latest weather…</p>
+        </div>
+      </div>
+      <div class="weather-stats">
+        <div class="stat">
+          <span class="stat-label">FEELS LIKE</span>
+          <span class="stat-value" id="feels-like">--°C</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">WIND</span>
+          <span class="stat-value" id="wind-speed">-- km/h</span>
+        </div>
+      </div>
+      <div class="weather-footer">
+        <span id="weather-updated">Updating…</span>
+        <span>Data by <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a></span>
+      </div>
     </section>
   </main>
   <script>
-    const reading = document.querySelector("#weather-reading");
-    const details = document.querySelector("#weather-details");
+    const temperature = document.querySelector("#temperature");
+    const conditions = document.querySelector("#conditions");
+    const icon = document.querySelector("#weather-icon");
+    const feelsLike = document.querySelector("#feels-like");
+    const windSpeed = document.querySelector("#wind-speed");
     const updated = document.querySelector("#weather-updated");
 
     function describeWeather(code) {
@@ -72,6 +223,18 @@
       return "Current conditions";
     }
 
+    function weatherIcon(code) {
+      if (code === 0) return "☀️";
+      if (code === 1) return "🌤️";
+      if (code === 2) return "⛅";
+      if (code === 3) return "☁️";
+      if ([45, 48].includes(code)) return "🌫️";
+      if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return "🌧️";
+      if ([71, 73, 75, 77, 85, 86].includes(code)) return "🌨️";
+      if ([95, 96, 99].includes(code)) return "⛈️";
+      return "☁️";
+    }
+
     async function updateWeather() {
       try {
         const url = "https://api.open-meteo.com/v1/forecast?latitude=53.4808&longitude=-2.2426&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m&wind_speed_unit=kmh&timezone=Europe%2FLondon";
@@ -80,13 +243,18 @@
         const data = await response.json();
         const current = data.current;
 
-        reading.textContent = `${Math.round(current.temperature_2m)}°C · ${describeWeather(current.weather_code)}`;
-        details.textContent = `Feels like ${Math.round(current.apparent_temperature)}°C · Wind ${Math.round(current.wind_speed_10m)} km/h`;
+        temperature.textContent = Math.round(current.temperature_2m);
+        conditions.textContent = describeWeather(current.weather_code);
+        icon.textContent = weatherIcon(current.weather_code);
+        feelsLike.textContent = `${Math.round(current.apparent_temperature)}°C`;
+        windSpeed.textContent = `${Math.round(current.wind_speed_10m)} km/h`;
         updated.textContent = `Updated ${new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", hour: "2-digit", minute: "2-digit" }).format(new Date())} UK time`;
       } catch {
-        reading.textContent = "Weather is temporarily unavailable.";
-        details.textContent = "Please try again shortly.";
-        updated.textContent = "";
+        temperature.textContent = "—";
+        conditions.textContent = "Weather is temporarily unavailable";
+        feelsLike.textContent = "—";
+        windSpeed.textContent = "—";
+        updated.textContent = "Please try again shortly";
       }
     }
 

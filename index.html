@@ -27,12 +27,71 @@
     }
     .pig { margin: 0 0 1rem; font-size: 4rem; line-height: 1; }
     h1 { margin: 0; color: #c13f79; font-size: clamp(2.25rem, 8vw, 3.5rem); }
+    .weather {
+      margin-top: 2rem;
+      padding: 1.25rem 1.5rem;
+      background: #fff0f6;
+      border: 1px solid #f5c2d7;
+      border-radius: 1.25rem;
+    }
+    .weather h2 { margin: 0; color: #80566c; font-size: 1rem; font-weight: 700; }
+    .weather-reading { margin: 0.6rem 0 0; color: #c13f79; font-size: 1.4rem; font-weight: 700; }
+    .weather-details, .weather-updated { margin: 0.4rem 0 0; color: #80566c; font-size: 0.9rem; }
+    .weather-updated { font-size: 0.75rem; }
+    .weather a { color: #a83268; }
   </style>
 </head>
 <body>
   <main>
     <div class="pig" role="img" aria-label="Pig">🐷</div>
     <h1>Hello, world!</h1>
+    <section class="weather" aria-labelledby="weather-title" aria-live="polite">
+      <h2 id="weather-title">Weather in Manchester</h2>
+      <p class="weather-reading" id="weather-reading">Getting the latest weather…</p>
+      <p class="weather-details" id="weather-details"></p>
+      <p class="weather-updated" id="weather-updated"></p>
+      <p class="weather-updated">Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a></p>
+    </section>
   </main>
+  <script>
+    const reading = document.querySelector("#weather-reading");
+    const details = document.querySelector("#weather-details");
+    const updated = document.querySelector("#weather-updated");
+
+    function describeWeather(code) {
+      if (code === 0) return "Clear sky";
+      if (code === 1) return "Mainly clear";
+      if (code === 2) return "Partly cloudy";
+      if (code === 3) return "Overcast";
+      if (code === 45 || code === 48) return "Foggy";
+      if ([51, 53, 55, 56, 57].includes(code)) return "Drizzle";
+      if ([61, 63, 65, 66, 67].includes(code)) return "Rain";
+      if ([71, 73, 75, 77, 85, 86].includes(code)) return "Snow";
+      if ([80, 81, 82].includes(code)) return "Rain showers";
+      if ([95, 96, 99].includes(code)) return "Thunderstorm";
+      return "Current conditions";
+    }
+
+    async function updateWeather() {
+      try {
+        const url = "https://api.open-meteo.com/v1/forecast?latitude=53.4808&longitude=-2.2426&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m&wind_speed_unit=kmh&timezone=Europe%2FLondon";
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) throw new Error("Weather request failed");
+        const data = await response.json();
+        const current = data.current;
+
+        reading.textContent = `${Math.round(current.temperature_2m)}°C · ${describeWeather(current.weather_code)}`;
+        details.textContent = `Feels like ${Math.round(current.apparent_temperature)}°C · Wind ${Math.round(current.wind_speed_10m)} km/h`;
+        updated.textContent = `Updated ${new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", hour: "2-digit", minute: "2-digit" }).format(new Date())} UK time`;
+      } catch {
+        reading.textContent = "Weather is temporarily unavailable.";
+        details.textContent = "Please try again shortly.";
+        updated.textContent = "";
+      }
+    }
+
+    updateWeather();
+    window.setInterval(updateWeather, 10 * 60 * 1000);
+  </script>
 </body>
 </html>
